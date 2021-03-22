@@ -1,0 +1,169 @@
+<!-- 투두 리스트 - 2020-06-0b8
+
+// 초기 데이터
+var initData = [
+    {id:1, title:'제목 가즈아', done: false date: JSON.stringify(new Date())},
+    {id:2, title:'aaaa', done: true, date: JSON.stringify(new Date())}
+];
+
+/**
+ * @class 투두 리스트 클래스
+ * @description 투두 리스트 인스턴스를 생성한다.
+ * @param {Array} [list] - 투두 리스트의 초기 리스트를 전달받는다.
+ */
+var todo = new Todo();
+
+/**
+ * @function 모든 리스트 반환 
+ * @description 등록된 모든 리스트를 반환한다.
+ */
+todo.getList();
+
+/**
+ * @function 추가 
+ * @description 리스트에 아이템을 등록한다. title 제외 자동 생성
+ * @param {string} title
+ */
+todo.add();
+
+// 삭제
+/**
+ * @function 삭제 
+ * @description 전달 받은 id에 해당하는 아이템을 제거 한다.
+ * @param {string} id
+ */
+todo.delete();
+
+// 수정 메서드
+/**
+ * @function 수정 
+ * @description 전달 받은 id에 전달받은 수정 데이터를 적용 한다.
+ * @param {string} id  * @param {object} data - 수정 데이터
+ * @param {string} [data.title] -  제목
+ * @param {boolean} [data.done] -  완료 상태
+ */
+todo.update();
+
+// toggle complete 
+
+
+[[심화]]
+
+- [ ] 생성자 방식 구현
+- [ ] 프로토타입 방식 구현 -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo</title>
+</head>
+<body>
+    <script>
+        var CreateTodo = function(){
+            function CreateTodo(){
+                this.list = [];
+            };
+            var id = 0;
+
+            function getInitValue(title){
+                return {
+                    id : ++id,
+                    title : title,
+                    done : false,
+                    date : JSON.stringify(new Date())
+                }
+            }
+
+            function myFilter(list, callback){
+                var newList = [];
+                myForEach(list,function(item){
+                    if(callback(item)){
+                        newList.push(item);
+                    }
+                })
+                return newList;
+            }
+
+            function myForEach(list, callback){
+                for(var i = 0; i<list.length; ++i){
+                    callback(list[i], i, list)
+                }
+            }
+
+            CreateTodo.prototype.getList = function(){
+                return this.list;
+            }
+            CreateTodo.prototype.add = function(title){
+                var data = getInitValue(title);
+                this.list.push(data);
+            }
+            CreateTodo.prototype.delete = function(id){
+                var deleteData = null;
+                // this.list = this.list.filter(function(val){
+                //     if(val.id === id){
+                //         deleteData = val;
+                //     }
+                //     return val.id !== id
+                // });
+                this.list = myFilter(this.list, function(val){
+                    if(val.id === id){
+                        deleteData = val;
+                    }
+                    return val.id !== id
+                })
+                return deleteData;
+            }
+            CreateTodo.prototype.modify = function(id, title){
+                var list = this.list;
+                // for(var i = 0; i<list.length; ++i){
+                //     if(list[i].id === id){
+                //         list[i].title = title;
+                //         return true;
+                //     }
+                // }
+                var flag = false;
+                myForEach(list, function(val){
+                    if(val.id === id){
+                        val.title = title;
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+            CreateTodo.prototype.complete = function(id){
+                var flag = false;
+                myForEach(this.list, function(val){
+                    if(val.id === id){
+                        val.done = true;
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+
+            return CreateTodo;
+        }();
+
+        var test = new CreateTodo();
+        test.add('test1');
+        test.add('test2');
+        test.add('test3');
+        test.add('test4');
+        test.add('test5');
+        test.add('test6');
+        console.log(test.getList());
+        console.log(test.delete(2));
+        console.log(test.delete(-1));
+        console.log(test.getList());
+        console.log('-----------------------')
+        console.log(test.modify(3, 'modify title'));
+        console.log(test.modify(-1, 'modify title'));
+        console.log(test.getList());
+        console.log(test.complete(3));
+        console.log(test.getList());
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var CreateCounter = function(count, step){
+            // this.get = function(){
+            //     return count;
+            // }
+            // this.increase = function(num){
+            //     return count += num || step;
+            // }
+            // this.decrease = function(num){
+            //     if(arguments.length > 0){
+            //         count -= num;
+            //     }else{
+            //         count -= step;
+            //     }
+            //     return count;
+            // }
+            this.count = count;
+            this.step = step;
+        };
+        CreateCounter.prototype.get = function(){
+            return this.count;
+        }
+        CreateCounter.prototype.increase = function(num){
+            return this.count += num || this.step;
+        }
+        CreateCounter.prototype.decrease = function(num){
+            return this.count -= num || this.step;
+        }
+
+    var counter = new CreateCounter(5,2);
+    
+    console.log(counter.get());//5
+    
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase()); 
+    
+    console.log(counter.get()); // 15
+
+    console.log(counter.decrease()); //13
+    
+    console.log(counter.get()); // 13
+
+    console.log(counter.increase(4));   //17
+
+    console.log(counter.decrease());    //15
+
+    console.log(counter.decrease(5));   //10
+
+
+    </script>
+</body>
+</html>

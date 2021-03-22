@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var createCounter = function(count, step){
+            var get = function(){
+                return count;
+            }
+            var increase = function(num){
+                return count += num || step;
+            }
+            var decrease = function(num){
+                if(arguments.length > 0){
+                    count -= num;
+                }else{
+                    count -= step;
+                }
+                return count;
+            }
+            return {
+                get : get,
+                increase : increase,
+                decrease : decrease
+            }
+        };
+
+    var counter = createCounter(5,2);
+    
+    console.log(counter.get());//5
+    
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase());
+    console.log(counter.increase()); 
+    
+    console.log(counter.get()); // 15
+
+    console.log(counter.decrease()); //13
+    
+    console.log(counter.get()); // 13
+
+    console.log(counter.increase(4));   //17
+
+    console.log(counter.decrease());    //15
+
+    console.log(counter.decrease(5));   //10
+
+    console.log(counter.increase(0));   //10
+
+    </script>
+</body>
+</html>

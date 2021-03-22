@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var CreateTodo = function(){
+            function CreateTodo(key){
+                this.list = [];
+                this.id = 0;
+                this.storageKey = key;
+                initData.call(this, key);
+            };
+
+            function initData(key){
+                // stoarage 데이터 체크
+                var localData = this.getLocalStorage(this.storageKey);
+                if(localData){
+                    this.list = localData.list;
+                    this.id = localData.lastId;
+                }
+            }
+
+            function getInitValue(title){
+                return {
+                    id : this.id++,
+                    title : title,
+                    done : false,
+                    date : new Date().toISOString()
+                }
+            }
+
+            function getExportData(){
+                return {
+                    lastId : this.id,
+                    list : JSON.parse(JSON.stringify(this.list))
+                }
+            }
+
+            function myFilter(list, callback){
+                var newList = [];
+                myForEach(list,function(item){
+                    if(callback(item)){
+                        newList.push(item);
+                    }
+                })
+                return newList;
+            }
+
+            function myForEach(list, callback){
+                for(var i = 0; i<list.length; ++i){
+                    callback(list[i], i, list)
+                }
+            }
+
+            CreateTodo.prototype.getList = function(){
+                return this.list;
+            }
+            CreateTodo.prototype.add = function(title){
+                var data = getInitValue.call(this,title);
+                this.list.push(data);
+            }
+            CreateTodo.prototype.delete = function(id){
+                var deleteData = null;
+                // this.list = this.list.filter(function(val){
+                //     if(val.id === id){
+                //         deleteData = val;
+                //     }
+                //     return val.id !== id
+                // });
+                this.list = myFilter(this.list, function(val){
+                    if(val.id === id){
+                        deleteData = val;
+                    }
+                    return val.id !== id
+                })
+                return deleteData;
+            }
+            CreateTodo.prototype.modify = function(id, title){
+                var list = this.list;
+                // for(var i = 0; i<list.length; ++i){
+                //     if(list[i].id === id){
+                //         list[i].title = title;
+                //         return true;
+                //     }
+                // }
+                var flag = false;
+                myForEach(list, function(val){
+                    if(val.id === id){
+                        val.title = title;
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+            CreateTodo.prototype.complete = function(id){
+                var flag = false;
+                myForEach(this.list, function(val){
+                    if(val.id === id){
+                        val.done = true;
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+            CreateTodo.prototype.getExportData = function(){
+                return getExportData.call(this);
+            }
+            CreateTodo.prototype.saveLocalStorage = function(){
+                localStorage.setItem(this.storageKey,JSON.stringify(this.getExportData()));
+            }
+            CreateTodo.prototype.getLocalStorage = function(){
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+            return CreateTodo;
+        }();
+
+        // var init = 
+        // {
+        //     lastId : 3,
+        //     list : 
+        //         [
+        //             {
+        //                 id : 1,
+        //                 title : 'test1',
+        //                 done : false,
+        //                 date : new Date().toISOString()
+        //             },
+        //             {
+        //                 id : 2,
+        //                 title : 'test2',
+        //                 done : false,
+        //                 date : new Date().toISOString()
+        //             },
+        //             {
+        //                 id : 3,
+        //                 title : 'test3',
+        //                 done : false,
+        //                 date : new Date().toISOString()
+        //             }
+        //         ]
+        // }
+            
+        var test = new CreateTodo('myData');
+        console.log(test.getList());
+        test.add('test4');
+        test.add('test5');
+        test.add('test6');
+        console.log(test.getList());
+        console.log(test.getExportData())
+    </script>
+</body>
+</html>
